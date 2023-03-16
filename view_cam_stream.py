@@ -4,7 +4,9 @@ import numpy as np
 import datetime
 from loguru import logger
 import click
+
 logger.info("Start reading from the stream of mouth ai camera...")
+
 @click.command()
 @click.option('--url', prompt='ai mouth service endpoint', default='http://192.168.1.144:10960/get_frame')
 def view_stream(url):
@@ -29,9 +31,14 @@ def view_stream(url):
                 timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
                 cv2.putText(frame, timestamp, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
                 cv2.putText(frame, f"Frame size: {frame.shape[1]}x{frame.shape[0]}", (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+                # draw center point
+                center = (frame.shape[1]//2, frame.shape[0]//2)
+                cv2.circle(frame, center, 4, (0, 0, 255), -1)
                 cv2.imshow('frame', frame)
                 if cv2.waitKey(1) & 0xFF == ord('q'):
                     break
+
     cv2.destroyAllWindows()
+
 if __name__ == '__main__':
     view_stream()
